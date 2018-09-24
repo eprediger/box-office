@@ -1,3 +1,15 @@
+# Files that won't be included
+*.pdf
+*.txt
+src/tp
+*.mdj
+
+# Folders that won't be included
+test/
+local-output/
+entregas/
+informe/
+
 # Prerequisites
 *.d
 
