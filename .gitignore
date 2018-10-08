@@ -1,7 +1,8 @@
 # Files that won't be included
 *.pdf
 *.txt
-src/tp
+src/client
+src/server
 *.mdj
 
 # Folders that won't be included
