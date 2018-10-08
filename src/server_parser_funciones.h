@@ -5,9 +5,6 @@
 #include <vector>
 #include <map>
 #include <algorithm>
-// #include <memory>
-
-// #include <iostream>
 
 #include "server_parser_file.h"
 #include "server_funcion.h"
@@ -16,11 +13,12 @@
 
 class FuncionesParser : public CSVParser {
 public:
-	FuncionesParser(const std::string& filename);
+	explicit FuncionesParser(const std::string& filename);
 
 	~FuncionesParser();
 
-	void parse_funciones(std::vector<Pelicula>& peliculas, std::map<std::string, Sala>& salas);
+	void parse_funciones(std::vector<Pelicula>& peliculas,
+						std::map<std::string, Sala>& salas);
 
 private:
 	unsigned id;

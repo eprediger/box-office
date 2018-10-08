@@ -1,9 +1,9 @@
 #ifndef __SERVER_SALA_H__
 #define __SERVER_SALA_H__
 
+#include <string>
 #include <vector>
 #include <algorithm>
-//#include <string>
 
 #include <iostream>
 
@@ -11,7 +11,8 @@
 
 class Sala {
 protected:
-	Sala(std::string& id, std::string& screen, char filas, unsigned columnas);
+	Sala(const std::string& id, const std::string& screen,
+		   const char filas, const unsigned columnas);
 
 public:	
 	virtual ~Sala();
@@ -26,14 +27,15 @@ public:
 
 	void show_seats(const unsigned funcionID);
 
-	void reserve_seat(const unsigned funcionID, const std::string& fila, const std::string& columna);
+	void reserve_seat(const unsigned funcionID, const std::string& fila,
+					  const std::string& columna);
 
 private:
 	bool valid_seat(const char fila, const unsigned columna);
 
 private:
-	std::string salaID;
-	std::string pantalla;
+	const std::string salaID;
+	const std::string pantalla;
 	std::vector<Funcion> funciones;
 
 protected:

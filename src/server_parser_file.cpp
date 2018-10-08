@@ -1,3 +1,4 @@
+#include <string>
 #include "server_parser_file.h"
 
 CSVParser::CSVParser(const std::string& filename) : 

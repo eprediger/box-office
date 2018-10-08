@@ -1,6 +1,7 @@
 #ifndef __SERVER_SALA_GRANDE_H__
 #define __SERVER_SALA_GRANDE_H__
 
+#include <string>
 #include "server_sala.h"
 
 #define SALA_GRANDE_FILAS 'P'
@@ -8,13 +9,9 @@
 
 class SalaGrande : public Sala {
 public:
-	SalaGrande(std::string& id, std::string& screen);
+	SalaGrande(const std::string& id, const std::string& screen);
 
 	~SalaGrande();
-	
-private:
-	unsigned filas, columnas;
-	//std::vector<Asiento> asientos;
 };
 
 #endif

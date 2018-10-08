@@ -1,6 +1,8 @@
 #ifndef __SERVER_SALA_MEDIANA_H__
 #define __SERVER_SALA_MEDIANA_H__
 
+#include <string>
+
 #include "server_sala.h"
 
 #define SALA_MEDIANA_FILAS 'K'
@@ -8,13 +10,9 @@
 
 class SalaMediana : public Sala {
 public:
-	SalaMediana(std::string& id, std::string& screen);
+	SalaMediana(const std::string& id, const std::string& screen);
 
 	~SalaMediana();
-
-private:
-	unsigned filas, columnas;
-	//std::vector<Asiento> asientos;
 };
 
 #endif

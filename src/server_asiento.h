@@ -3,7 +3,7 @@
 
 class Asiento {
 public:
-	Asiento(unsigned fila, char columna);
+	Asiento(const unsigned fila, const char columna);
 
 	Asiento(const Asiento& other);
 
@@ -15,16 +15,15 @@ public:
 
 	bool esta_reservado() const;
 
-	// void reservar();
-
 private:
-	unsigned fila;
-	char columna;
+	const unsigned fila;
+	const char columna;
 	bool ocupado;
 };
 
 struct find_by_position {
-	find_by_position(const unsigned fil, const char col) : _fil(fil), _col(col) {}
+	find_by_position(const unsigned fil, const char col) :
+	_fil(fil), _col(col) {}
 	bool operator()(const Asiento& seat) const {
 		return ((seat.get_fila() == _fil) && (seat.get_columna() == _col));
 	}

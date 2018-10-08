@@ -3,16 +3,13 @@
 
 #include <string>
 #include <vector>
-// #include <memory>
-
-#include <iostream>
 
 #include "server_parser_file.h"
 #include "server_pelicula.h"
 
 class PeliculasParser : public CSVParser {
 public:
-	PeliculasParser(const std::string& filename);
+	explicit PeliculasParser(const std::string& filename);
 
 	~PeliculasParser();
 

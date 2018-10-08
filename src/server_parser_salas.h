@@ -3,9 +3,6 @@
 
 #include <string>
 #include <map>
-// #include <memory>
-
-#include <iostream>
 
 #include "server_parser_file.h"
 #include "server_sala_chica.h"
@@ -14,7 +11,7 @@
 
 class SalasParser : public CSVParser {
 public:
-	SalasParser(const std::string& filename);
+	explicit SalasParser(const std::string& filename);
 
 	~SalasParser();
 

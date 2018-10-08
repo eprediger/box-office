@@ -1,6 +1,6 @@
 #include "server_asiento.h"
 
-Asiento::Asiento(unsigned fila, char columna) :
+Asiento::Asiento(const unsigned fila, const char columna) :
 	fila(fila),
 	columna(columna),
 	ocupado(true) {}
@@ -8,11 +8,7 @@ Asiento::Asiento(unsigned fila, char columna) :
 Asiento::Asiento(const Asiento& other) : 
 	fila(other.fila),
 	columna(other.columna),
-	ocupado(other.ocupado) {
-	this->fila = other.fila;
-	this->columna = other.columna;
-	this->ocupado = other.ocupado;
-}
+	ocupado(other.ocupado) {}
 
 Asiento::~Asiento() {}
 
@@ -27,7 +23,3 @@ char Asiento::get_columna() const {
 bool Asiento::esta_reservado() const {
 	return this->ocupado;
 }
-
-/*void Asiento::reservar() {
-	this->ocupado = true;
-}*/

@@ -1,6 +1,9 @@
+#include <string>
+#include <vector>
 #include "server_sala.h"
 
-Sala::Sala(std::string& id, std::string& screen, char filas, unsigned columnas) : 
+Sala::Sala(const std::string& id, const std::string& screen,
+		   const char filas, const unsigned columnas) : 
 	salaID(id),
 	pantalla(screen),
 	funciones(),
@@ -48,7 +51,8 @@ void Sala::show_seats(const unsigned funcionID) {
 	}
 }
 
-void Sala::reserve_seat(const unsigned funcionID, const std::string& fila, const std::string& columna) {
+void Sala::reserve_seat(const unsigned funcionID, const std::string& fila,
+						const std::string& columna) {
 	std::vector<Funcion>::iterator funcion_by_id;
 	funcion_by_id = std::find_if(this->funciones.begin(), this->funciones.end(),
 								find_by_id(funcionID));
@@ -56,10 +60,11 @@ void Sala::reserve_seat(const unsigned funcionID, const std::string& fila, const
 	if (funcion_by_id != funciones.end()) {	// existe funcionID
 		char letraFila = fila[0];
 		unsigned numColumna = (unsigned) std::stoul(columna, nullptr, 10);
-		if (this->valid_seat(letraFila, numColumna)) {	// fila y columna validas
+		if (this->valid_seat(letraFila, numColumna)) {
+		// fila y columna validas
 			funcion_by_id->reserve_seat(letraFila, numColumna);	
-		} else {	// parametros incorrectos
-
+		} else {
+		// parametros incorrectos
 		}
 	}
 }

@@ -1,6 +1,7 @@
 #ifndef __SERVER_CINE_H__
 #define __SERVER_CINE_H__
 
+#include <string>
 #include <vector>
 #include <map>
 
@@ -14,7 +15,8 @@
 
 class Cine {
 public:
-	Cine(SalasParser& salasParser, PeliculasParser& peliculasParser, FuncionesParser& funcionesParser);
+	Cine(const std::string& salasFile, const std::string& peliculasFile, 
+		 const std::string& funcionesFile);
 	
 	~Cine();
 
@@ -28,10 +30,11 @@ public:
 
 	void view_seats(const unsigned funcionID);
 
-	void reserve_seat(const unsigned funcionID, const std::string& fila, const std::string& columna);
+	void reserve_seat(const unsigned funcionID, const std::string& fila,
+					  const std::string& columna);
 
 private:
-	std::vector<Pelicula> peliculas;
+	std::vector<Pelicula> cartelera;
 	std::map<std::string, Sala> salas;
 };
 

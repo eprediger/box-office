@@ -1,6 +1,8 @@
+#include <string>
 #include "server_pelicula.h"
 
-Pelicula::Pelicula(const std::string& title, const std::string& lang, const std::string& rating, const std::string& genre) : 
+Pelicula::Pelicula(const std::string& title, const std::string& lang, 
+			 	   const std::string& rating, const std::string& genre) : 
 	title(title), 
 	lang(lang), 
 	rating(rating), 

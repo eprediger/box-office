@@ -1,6 +1,9 @@
+#include <string>
+#include <vector>
 #include "server_funcion.h"
 
-Funcion::Funcion(const unsigned id, Pelicula& pelicula, const std::string& fecha, const std::string& hora) :
+Funcion::Funcion(const unsigned id, Pelicula& pelicula,
+				 const std::string& fecha, const std::string& hora) :
 	idFuncion(id),
 	pelicula(pelicula),
 	fecha(fecha),
@@ -36,10 +39,10 @@ void Funcion::show_seats(const char maxFil, const unsigned maxCol) {
 	for (char i = 'A'; i <= maxFil; ++i) {
 		std::cout << i;
 		for (unsigned j = 1; j <= maxCol; ++j)	{
-			std::vector<Asiento>::iterator it_asiento;
-			it_asiento = std::find_if(this->asientos.begin(), this->asientos.end(),
+			std::vector<Asiento>::iterator it_seat;
+			it_seat = std::find_if(this->asientos.begin(), this->asientos.end(),
 						find_by_position(i, j));
-			if (it_asiento == this->asientos.end()) { // El asiento no existe
+			if (it_seat == this->asientos.end()) { // El asiento no existe
 				std::cout << "\tO";
 			} else {//if (it_asiento->esta_reservado()) {
 				std::cout << "\tX";
@@ -58,6 +61,5 @@ void Funcion::reserve_seat(const char fila, const unsigned columna) {
 	if (it_asiento == this->asientos.end()) { // El asiento no existe
 		this->asientos.push_back(Asiento(fila, columna));
 	} else { // El asiento existe
-
 	}
 }

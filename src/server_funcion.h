@@ -14,7 +14,8 @@
 
 class Funcion {
 public:
-	Funcion(const unsigned id, Pelicula& pelicula, const std::string& fecha, const std::string& hora);
+	Funcion(const unsigned id, Pelicula& pelicula, const std::string& fecha,
+			const std::string& hora);
 
 	~Funcion();
 
@@ -39,7 +40,7 @@ private:
 };
 
 struct find_by_id {
-	find_by_id(const unsigned id) : id(id) {}
+	explicit find_by_id(const unsigned id) : id(id) {}
 	bool operator()(const Funcion& func) const {
 		return func.get_id() == id;
 	}
