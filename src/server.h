@@ -5,6 +5,9 @@
 #include <string>
 
 #include "server_cine.h"
+#include "common_socket.h"
+
+#define MAX_LISTEN 1
 
 class Server {
 public:
@@ -15,7 +18,7 @@ public:
 
 private:
 	Cine cine;
-	// Socket socket;
+	Socket socket;
 };
 
 #endif

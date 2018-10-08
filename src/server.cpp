@@ -1,5 +1,5 @@
-#define _POSIX_C_SOURCE 200112L
-
+#include <netdb.h>
+#include <sys/socket.h>
 #include <string>
 
 #include "server.h"
@@ -10,14 +10,19 @@
 #define USAGE_ERROR 1
 #define FILE_ERROR 2
 
+#define MAX_LISTEN 1
+
 Server::Server(const std::string& service, const std::string& salasFile,
 	const std::string& peliculasFile, const std::string& funcionesFile) : 
-	cine(salasFile, peliculasFile, funcionesFile)
-	// ,socket(nullptr, service, AI_PASSIVE) 
-	{
-}
+	cine(salasFile, peliculasFile, funcionesFile),
+	socket(nullptr, service, AI_PASSIVE) {
+		this->socket._bind();
+		this->socket._listen(MAX_LISTEN);
+	}
 
-Server::~Server() {}
+Server::~Server() {
+	this->socket._shutdown(SHUT_RDWR);
+}
 
 
 int main(int argc, const char *argv[]) {
