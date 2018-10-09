@@ -2,6 +2,7 @@
 #define __COMMON_SOCKET_H__
 
 #include <string>
+#include <vector>
 
 #include "common_exception.h"
 
@@ -11,23 +12,23 @@ public:
 	
 	Socket(int fd);
 
-	Socket(Socket&& other);
+	// Socket(Socket&& other);
 	
 	~Socket();
 
-	void _bind();
+	void bind();
 
-	void _listen(const int max_request);
+	void listen(const int max_request);
 
-	Socket _accept();
+	int accept();
 
-	// int _connect();
+	void connect();
 
-	// size_t _send(const int* buf, const size_t size);
+	void send(const std::vector<char>& buf) const;
 
-	// size_t _receive(int* buf, size_t size);
+	size_t receive(std::vector<char>& buf) const;
 
-	void _shutdown(const int how);
+	void shutdown(const int how);
 
 private:
 	int skt_fd;

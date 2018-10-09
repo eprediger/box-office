@@ -11,7 +11,7 @@
 #include "server_sala.h"
 #include "server_pelicula.h"
 
-#include <iostream> // test filters
+// #include <iostream> // test filters
 
 class Cine {
 public:

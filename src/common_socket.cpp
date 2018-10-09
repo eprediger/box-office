@@ -45,23 +45,24 @@ Socket::Socket(const int fd) :
 	skt_fd(fd),
 	address(nullptr) {}
 
-Socket::Socket(Socket&& other) :
+/*Socket::Socket(Socket&& other) :
 	skt_fd(other.skt_fd),
 	address(other.address) {
 	other.skt_fd = -1;
 	other.address = nullptr;
-}
+}*/
 
 Socket::~Socket() {
 	if (this->address != nullptr) {
 		freeaddrinfo(this->address);
 	}
 	if (this->skt_fd != -1) {
-		close(this->skt_fd);
+		// shutdown(this->skt_fd, SHUT_RDWR);
+		// close(this->skt_fd);
 	}
 }
 
-void Socket::_bind() {
+void Socket::bind() {
 	int o = 1;	// one
 	if (setsockopt(this->skt_fd, SOL_SOCKET,SO_REUSEADDR,&o,sizeof(o)) == -1) {
 		throw Exception("reusing address error");
@@ -71,78 +72,73 @@ void Socket::_bind() {
 	struct sockaddr* address = this->address->ai_addr;
 	socklen_t address_len = this->address->ai_addrlen;
 
-	if (bind(this->skt_fd, address, address_len) == -1) {
+	if (::bind(this->skt_fd, address, address_len) == -1) {
 		std::string msg = "Binding error: " + std::string(strerror(errno));
 		throw Exception(msg);
-		// fprintf(stderr, "binding error: %s\n", strerror(errno));
 	}
 }
 
-void Socket::_listen(const int max_request) {
-	if (listen(this->skt_fd, max_request) == -1) {
+void Socket::listen(const int max_request) {
+	if (::listen(this->skt_fd, max_request) == -1) {
 		std::string msg = "Listening error: " + std::string(strerror(errno));
 		throw Exception(msg);
-		// fprintf(stderr, "listening error: %s\n", strerror(errno));
 	}
 }
 
-Socket Socket::_accept() {
-	int client_socket = accept(this->skt_fd, nullptr, nullptr);
-	if (client_socket == -1) {	// manejar error
+int Socket::accept() {
+	int peer_socket = ::accept(this->skt_fd, nullptr, nullptr);
+	if (peer_socket == -1) {	// manejar error
+		std::string msg = "Accepting error: " + std::string(strerror(errno));
+		throw Exception(msg);
 	}
-	return std::move(Socket(client_socket));
+	return peer_socket;
 }
-/*
-int socket_connect(socket_t* self) {
-	struct sockaddr* address = self->_address->ai_addr;
-	socklen_t address_len = self->_address->ai_addrlen;
+
+void Socket::connect() {
+	struct sockaddr* address = this->address->ai_addr;
+	socklen_t address_len = this->address->ai_addrlen;
 	
-	int s = connect(self->_socket, address, address_len);
-	if (s == -1) {
-		fprintf(stderr, "connection error: %s\n", strerror(errno));
-		socket_destroy(self);
-		return -1;
+	if (::connect(this->skt_fd, address, address_len) == -1) {
+		std::string msg = "Connection error: " + std::string(strerror(errno));
+		throw Exception(msg);
 	}
-
-	return 0;
 }
 
-size_t Socket::_send(socket_t* self, const int* buf, const size_t size) {
+// size_t Socket::_send(const char* buf, const size_t size) const {
+void Socket::send(const std::vector<char>& buf) const {
+	auto size = buf.size();
 	size_t sent = 0;
 	int length_sent = 0;
 	bool open_socket = true;
-	bool valid_socket = true;
 
-	while ((sent < size) && (valid_socket) && (open_socket)) {
+	while ((sent < size) && open_socket) {
 		size_t remaining = size - sent;
-		length_sent = send(self->_socket, &buf[sent], remaining, MSG_NOSIGNAL);
+		length_sent = ::send(this->skt_fd, &buf[sent], remaining, MSG_NOSIGNAL);
 
 		if (length_sent < 0) {	// Error al enviar
-			fprintf(stderr, "sending error: %s\n", strerror(errno));
-			valid_socket = false;
-		} else if (length_sent == 0) {	// Socket cerrado
+			std::string msg = "Sending error: " + std::string(strerror(errno));
+			throw Exception(msg);
+		} else if  (length_sent == 0) {
 			open_socket = false;
 		} else {
 			sent += length_sent;
 		}
 	}
-
-	return sent;
 }
 
-size_t Socket::_receive(socket_t* self, int* buf, size_t size) {
+size_t Socket::receive(std::vector<char>& buf) const {
+	auto size = buf.size();
 	size_t received = 0;
 	int len_recv = 0;
 	bool open_socket = true;
-	bool valid_socket = true;
 
-	while ((received < size) && (valid_socket) && (open_socket)) {
+	while ((received < size) && (open_socket)) {
 		size_t remaining = size - received;
-		len_recv = recv(self->_socket, &buf[received], remaining, MSG_NOSIGNAL);
+		len_recv = ::recv(this->skt_fd, &buf[received], remaining, MSG_NOSIGNAL);
 		
-		if (len_recv < 0) {	// Error al enviar
-			fprintf(stderr, "receiving error: %s\n", strerror(errno));
-			valid_socket = false;
+		if (len_recv < 0) {	// Error al recibir
+			std::string msg = "Receiving error: " + std::string(strerror(errno));
+			throw Exception(msg);
 		} else if (len_recv == 0) {	// Socket cerrado
 			open_socket = false;
 		} else {
@@ -151,7 +147,7 @@ size_t Socket::_receive(socket_t* self, int* buf, size_t size) {
 	}
 	return received;
 }
-*/
-void Socket::_shutdown(const int how) {
-	shutdown(this->skt_fd, how);	
+
+void Socket::shutdown(const int how) {
+	::shutdown(this->skt_fd, how);
 }

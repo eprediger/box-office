@@ -3,11 +3,13 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 
 #include "server_cine.h"
 #include "common_socket.h"
 
 #define MAX_LISTEN 1
+#define BUF_SIZE 1024
 
 class Server {
 public:
@@ -16,9 +18,14 @@ public:
 
 	~Server();
 
+	void run();
+	
+	void send_response(const std::string& msg);
+
 private:
 	Cine cine;
-	Socket socket;
+	std::vector<char> buffer;
+	Socket acceptSkt, peerSkt;
 };
 
 #endif
