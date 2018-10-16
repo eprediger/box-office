@@ -17,11 +17,11 @@ public:
 	std::string get_title() const;
 
 	std::string get_lang() const;
-	
+
 	std::string get_rating() const;
-	
+
 	std::string get_genre() const;
-	
+
 private:
 	const std::string title;
 	const std::string lang;

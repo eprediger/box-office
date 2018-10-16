@@ -5,27 +5,26 @@
 #include <string>
 #include <vector>
 
-#include "server_cine.h"
 #include "common_socket.h"
 
-#define MAX_LISTEN 1
+#define MAX_LISTEN 10
 #define BUF_SIZE 1024
 
 class Server {
 public:
-	Server(const std::string& service, const std::string& salasFile,
-		   const std::string& peliculasFile, const std::string& funcionesFile);
-
+	explicit Server(const char* service);
+	
 	~Server();
 
-	void run();
-	
-	void send_response(const std::string& msg);
+	Socket accept() const;
+
+	bool keepAccepting();
+
+	void shutdown();
 
 private:
-	Cine cine;
-	std::vector<char> buffer;
-	Socket acceptSkt, peerSkt;
+	bool manualShutDown;
+	Socket acceptSkt;
 };
 
 #endif

@@ -3,21 +3,23 @@
 
 #include <string>
 #include <iostream>
+#include <vector>
 
 class CommandParser {
 public:
 	explicit CommandParser(const std::string& message);
-	
+
 	~CommandParser();
 
 	std::string get_command() const;
 
-	std::string get_value() const;
-	
+	std::vector<std::string> get_values() const;
+
 private:
 	const char delim;
 	const std::string command;
-	const std::string value;
+	std::string value;
+	std::vector<std::string> values;
 };
 
 #endif

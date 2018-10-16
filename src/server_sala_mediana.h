@@ -5,8 +5,8 @@
 
 #include "server_sala.h"
 
-#define SALA_MEDIANA_FILAS 'K'
-#define SALA_MEDIANA_COLUMNAS 10
+#define SALA_MEDIANA_FILAS 'J'
+#define SALA_MEDIANA_COLUMNAS 11
 
 class SalaMediana : public Sala {
 public:

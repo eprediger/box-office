@@ -4,8 +4,8 @@
 #include <string>
 #include "server_sala.h"
 
-#define SALA_GRANDE_FILAS 'P'
-#define SALA_GRANDE_COLUMNAS 15
+#define SALA_GRANDE_FILAS 'O'
+#define SALA_GRANDE_COLUMNAS 16
 
 class SalaGrande : public Sala {
 public:

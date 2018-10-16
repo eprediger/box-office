@@ -3,15 +3,17 @@
 
 #include "common_socket.h"
 
+#include <string>
+
 class Client {
 public:
 	Client(const char* host, const char* service);
 
 	~Client();
 
-	void send(std::vector<char> v) const;
+	void send_payload(const std::string& payload);
 
-	void receive() const;
+	void recv_payload();
 
 private:
 	Socket connectionSkt;

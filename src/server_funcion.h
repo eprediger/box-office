@@ -20,23 +20,42 @@ public:
 	~Funcion();
 
 	unsigned get_id() const;
-	
+
 	std::string get_fecha() const;
+	
+	std::string get_time() const;
 
 	std::string get_title() const;
 
-	void get_title_by_date(const std::string& date) const;
+	std::string function_info(const std::string& sala) const;
 
-	void show_seats(const char maxFil, const unsigned maxCol);
+	std::string show_seats(const char maxFil, const unsigned maxCol);
 
-	void reserve_seat(const char fila, const unsigned columna);
-	
+	std::string reserve_seat(const char fila, const unsigned columna);
+
 private:
 	const unsigned idFuncion;
 	Pelicula& pelicula;
 	const std::string fecha;
 	const std::string hora;
 	std::vector<Asiento> asientos;
+};
+
+struct find_by_date {
+	explicit find_by_date(const std::string fecha,
+		const std::string& sala, std::string& msg) :
+		fecha(fecha),
+		sala(sala),
+		msg(msg) {}
+	void operator()(const Funcion& func) const {
+		if (func.get_fecha() == fecha) {
+			msg += func.function_info(sala);
+		}
+	}
+private:
+	const std::string fecha;
+	const std::string sala;
+	std::string& msg;
 };
 
 struct find_by_id {

@@ -7,7 +7,7 @@
 class CSVParser {
 public:
 	explicit CSVParser(const std::string& filename);
-	
+
 	virtual ~CSVParser();
 
 protected:

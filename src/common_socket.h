@@ -6,27 +6,33 @@
 
 #include "common_exception.h"
 
+#define NUM_SIZE 4
+
 class Socket {
 public:
-	Socket(const char* node, const std::string& serv, const int flags);
-	
-	Socket(int fd);
+	Socket(const char* node, const char* serv, const int flags);
 
-	// Socket(Socket&& other);
-	
+	explicit Socket(int fd);
+
 	~Socket();
 
 	void bind();
 
 	void listen(const int max_request);
 
-	int accept();
+	int accept() const;
 
 	void connect();
 
-	void send(const std::vector<char>& buf) const;
+	void send_length(uint32_t number) const;
 
-	size_t receive(std::vector<char>& buf) const;
+	void send(const char* buf, size_t size) const;
+
+	size_t receive_number(uint32_t* number) const;
+
+	size_t receive(char* buf, uint32_t size) const;
+
+	void close();
 
 	void shutdown(const int how);
 

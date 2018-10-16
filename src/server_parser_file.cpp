@@ -5,7 +5,7 @@
 CSVParser::CSVParser(const std::string& filename) : 
 	file(filename, std::ifstream::in),
 	delim(',') {
-	if (!file) {
+	if (file.fail()) {
 		std::string error = "El archivo " + filename + " no existe.";
 		throw Exception(error);
 	}

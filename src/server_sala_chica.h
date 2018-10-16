@@ -5,8 +5,8 @@
 
 #include "server_sala.h"
 
-#define SALA_CHICA_FILAS 'F'
-#define SALA_CHICA_COLUMNAS 5
+#define SALA_CHICA_FILAS 'E'
+#define SALA_CHICA_COLUMNAS 6
 
 class SalaChica : public Sala {
 public:

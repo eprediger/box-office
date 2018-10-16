@@ -14,20 +14,20 @@ protected:
 	Sala(const std::string& id, const std::string& screen,
 		   const char filas, const unsigned columnas);
 
-public:	
+public:
 	virtual ~Sala();
 
 	std::string get_ID() const;
 
 	void nueva_funcion(const Funcion& funcion);
 
-	void get_title_by_date(const std::string& date);
+	std::string get_title_by_date(const std::string& date);
 
 	bool has_funcionID(const unsigned funcionID);
 
-	void show_seats(const unsigned funcionID);
+	std::string show_seats(const unsigned funcionID);
 
-	void reserve_seat(const unsigned funcionID, const std::string& fila,
+	std::string reserve_seat(const unsigned funcionID, const std::string& fila,
 					  const std::string& columna);
 
 private:

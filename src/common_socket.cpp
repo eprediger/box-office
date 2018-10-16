@@ -11,17 +11,17 @@
 
 #include "common_socket.h"
 
-Socket::Socket(const char* node, const std::string& serv, const int flags) :
+Socket::Socket(const char* node, const char* serv, const int flags) :
 	skt_fd(-1),
 	address(nullptr) {
 	struct addrinfo hints{};
 	struct addrinfo* result;
-	
+
 	hints.ai_family = AF_INET;			// IPv4
 	hints.ai_socktype = SOCK_STREAM;	// TCP
 	hints.ai_flags = flags;				// Server: AI_PASSIVE | Client: 0
 
-	int s = getaddrinfo(node, serv.c_str(), &hints, &result);
+	int s = getaddrinfo(node, serv, &hints, &result);
 	if (s != 0) {
 		throw Exception(gai_strerror(s));
 	}
@@ -45,20 +45,13 @@ Socket::Socket(const int fd) :
 	skt_fd(fd),
 	address(nullptr) {}
 
-/*Socket::Socket(Socket&& other) :
-	skt_fd(other.skt_fd),
-	address(other.address) {
-	other.skt_fd = -1;
-	other.address = nullptr;
-}*/
-
 Socket::~Socket() {
 	if (this->address != nullptr) {
 		freeaddrinfo(this->address);
 	}
 	if (this->skt_fd != -1) {
-		// shutdown(this->skt_fd, SHUT_RDWR);
-		// close(this->skt_fd);
+		// this->shutdown(SHUT_RDWR);
+		// ::close(this->skt_fd);
 	}
 }
 
@@ -66,7 +59,6 @@ void Socket::bind() {
 	int o = 1;	// one
 	if (setsockopt(this->skt_fd, SOL_SOCKET,SO_REUSEADDR,&o,sizeof(o)) == -1) {
 		throw Exception("reusing address error");
-		// fprintf(stderr, "reusing address error: %s\n", strerror(errno));
 	}
 
 	struct sockaddr* address = this->address->ai_addr;
@@ -85,7 +77,7 @@ void Socket::listen(const int max_request) {
 	}
 }
 
-int Socket::accept() {
+int Socket::accept() const {
 	int peer_socket = ::accept(this->skt_fd, nullptr, nullptr);
 	if (peer_socket == -1) {	// manejar error
 		std::string msg = "Accepting error: " + std::string(strerror(errno));
@@ -97,55 +89,68 @@ int Socket::accept() {
 void Socket::connect() {
 	struct sockaddr* address = this->address->ai_addr;
 	socklen_t address_len = this->address->ai_addrlen;
-	
+
 	if (::connect(this->skt_fd, address, address_len) == -1) {
 		std::string msg = "Connection error: " + std::string(strerror(errno));
 		throw Exception(msg);
 	}
 }
 
-// size_t Socket::_send(const char* buf, const size_t size) const {
-void Socket::send(const std::vector<char>& buf) const {
-	auto size = buf.size();
+void Socket::send_length(uint32_t number) const {
+	number = ::htonl(number);
+	this->send((char*) &number, NUM_SIZE);
+}
+
+void Socket::send(const char* buf, size_t size) const {
 	size_t sent = 0;
-	int length_sent = 0;
+	int len_sent = 0;
 	bool open_socket = true;
 
 	while ((sent < size) && open_socket) {
 		size_t remaining = size - sent;
-		length_sent = ::send(this->skt_fd, &buf[sent], remaining, MSG_NOSIGNAL);
+		len_sent = ::send(this->skt_fd, &buf[sent], remaining, MSG_NOSIGNAL);
 
-		if (length_sent < 0) {	// Error al enviar
+		if (len_sent < 0) {	// Error al enviar
 			std::string msg = "Sending error: " + std::string(strerror(errno));
 			throw Exception(msg);
-		} else if  (length_sent == 0) {
+		} else if  (len_sent == 0) {
 			open_socket = false;
 		} else {
-			sent += length_sent;
+			sent += len_sent;
 		}
 	}
 }
 
-size_t Socket::receive(std::vector<char>& buf) const {
-	auto size = buf.size();
-	size_t received = 0;
+size_t Socket::receive_number(uint32_t* number) const {
+	size_t b_recv = this->receive((char*) number, NUM_SIZE);
+	*number = ::ntohl(*number);
+
+	return b_recv;
+}
+
+size_t Socket::receive(char* buf, const uint32_t size) const {
+	size_t b_recv = 0;	//	Bytes Recibidos
 	int len_recv = 0;
 	bool open_socket = true;
 
-	while ((received < size) && (open_socket)) {
-		size_t remaining = size - received;
-		len_recv = ::recv(this->skt_fd, &buf[received], remaining, MSG_NOSIGNAL);
-		
+	while ((b_recv < size) && (open_socket)) {
+		size_t remaining = size - b_recv;
+		len_recv = ::recv(this->skt_fd, &buf[b_recv], remaining, MSG_NOSIGNAL);
+
 		if (len_recv < 0) {	// Error al recibir
 			std::string msg = "Receiving error: " + std::string(strerror(errno));
 			throw Exception(msg);
 		} else if (len_recv == 0) {	// Socket cerrado
 			open_socket = false;
 		} else {
-			received += len_recv;
+			b_recv += len_recv;
 		}
 	}
-	return received;
+	return b_recv;
+}
+
+void Socket::close() {
+	::close(this->skt_fd);
 }
 
 void Socket::shutdown(const int how) {

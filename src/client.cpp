@@ -2,6 +2,7 @@
 #include <sys/socket.h>
 #include <iostream>
 #include <vector>
+#include <string>
 
 #include "client.h"
 
@@ -10,45 +11,21 @@
 Client::Client(const char* host, const char* service) : 
 	connectionSkt(host, service, 0) {
 	this->connectionSkt.connect();
-	}
+}
 
 Client::~Client() {}
 
-void Client::send(std::vector<char> v) const {
-	this->connectionSkt.send(v);
+void Client::send_payload(const std::string& payload) {
+	this->connectionSkt.send_length(payload.length());
+	this->connectionSkt.send(payload.c_str(), payload.length());
 }
 
-void Client::receive() const {
-	bool receiving = true;
-	while (receiving) {
-		std::vector<char> v(BUF_SIZE);
-		int a = this->connectionSkt.receive(v);
 
-		receiving = (a > 0);
-
-		if (receiving) {
-			std::cout << std::string(v.begin(), v.end()) << std::endl;
-		}
-	}
-}
-
-#define NUM_ARGS 3
-
-#define SUCCESS 0
-#define USAGE_ERROR 1
-
-int main(int argc, const char *argv[]) {
-	if (argc != NUM_ARGS) {
-		std::cerr << "Uso: " << argv[0]
-				  << " <ip-servidor> <puerto-servidor>" << std::endl;
-		return USAGE_ERROR;
-	} else {
-		Client cliente(argv[1], argv[2]);
-		std::string input;
-		while (getline(std::cin, input)) {
-			cliente.send(std::vector<char>(input.begin(),input.end()));
-			// cliente.receive();
-		}
-		return SUCCESS;
-	}
+void Client::recv_payload() {
+	uint32_t length = 0;
+	this->connectionSkt.receive_number(&length);
+	char* buffer = new char[length]();
+	this->connectionSkt.receive(&buffer[0], length);
+	std::cout << buffer;
+	delete buffer;
 }
