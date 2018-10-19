@@ -5,14 +5,16 @@
 Cine::Cine(const std::string& salasFile, const std::string& peliculasFile,
 	       const std::string& funcionesFile) :
 	cartelera(),
-	salas() {
+	salas(),
+	funciones() {
 	try {
 		SalasParser salasParser(salasFile);
 		PeliculasParser peliculasParser(peliculasFile);
 		FuncionesParser funcionesParser(funcionesFile);
 		salasParser.parse_salas(this->salas);
 		peliculasParser.parse_peliculas(this->cartelera);
-		funcionesParser.parse_funciones(this->cartelera, this->salas);
+		funcionesParser.parse_funciones(this->cartelera,
+										this->salas, this->funciones);
 	} catch (const std::exception& e) {
 		throw;
 	}
@@ -62,9 +64,9 @@ std::string Cine::filter_by_genre(const std::string& genre) {
 std::string Cine::filter_by_date(const std::string& date) {
 	Lock l(m);
 	std::string movies;
-	for (auto sala : this->salas) {
-		movies += sala.second.get_title_by_date(date);
-	}
+	std::for_each(this->funciones.begin(), this->funciones.end(),
+				  find_by_date(date, movies));
+
 	return movies;
 }
 
@@ -72,11 +74,10 @@ std::string Cine::view_seats(const std::string& funcion) {
 	Lock l(m);
 	unsigned funcionID = (unsigned int) std::stoul(funcion, nullptr, 10);
 	std::string movies;
-	for (auto sala : this->salas) {
-		if (sala.second.has_funcionID(funcionID)) {
-			movies += sala.second.show_seats(funcionID);
-		}
-	}
+
+	movies = this->funciones.at(funcionID).function_info();
+	movies += this->funciones.at(funcionID).show_seats();
+
 	return movies;
 }
 
@@ -84,11 +85,10 @@ std::string Cine::reserve_seat(const std::string& funcion,
 			const std::string& fila, const std::string& columna) {
 	Lock l(m);
 	unsigned funcionID = (unsigned int) std::stoul(funcion, nullptr, 10);
+	char letraFila = fila[0];
+	unsigned numColumna = (unsigned) std::stoul(columna, nullptr, 10);
+	
 	std::string response;
-	for (auto& sala : this->salas) {
-		if (sala.second.has_funcionID(funcionID)) {
-			response += sala.second.reserve_seat(funcionID, fila, columna);
-		}
-	}
+	response = this->funciones.at(funcionID).reserve_seat(letraFila, numColumna);
 	return response;
 }

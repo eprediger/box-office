@@ -6,6 +6,7 @@
 #include "server_parser_funciones.h"
 #include "server_sala.h"
 #include "server_pelicula.h"
+#include "server_funcion.h"
 #include "common_lock.h"
 
 #include <string>
@@ -36,7 +37,7 @@ public:
 private:
 	std::vector<Pelicula> cartelera;
 	std::map<std::string, Sala> salas;
-
+	std::map<unsigned, Funcion> funciones;
 	std::mutex m;
 };
 

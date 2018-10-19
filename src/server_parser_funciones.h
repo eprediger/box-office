@@ -18,7 +18,8 @@ public:
 	~FuncionesParser();
 
 	void parse_funciones(std::vector<Pelicula>& peliculas,
-						std::map<std::string, Sala>& salas);
+						std::map<std::string, Sala>& salas,
+						std::map<unsigned, Funcion>& funciones);
 
 private:
 	unsigned id;

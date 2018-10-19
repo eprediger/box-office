@@ -2,9 +2,10 @@
 #include <vector>
 #include "server_funcion.h"
 
-Funcion::Funcion(const unsigned id, Pelicula& pelicula,
+Funcion::Funcion(const unsigned id, Sala& sala, Pelicula& pelicula,
 				 const std::string& fecha, const std::string& hora) :
 	idFuncion(id),
+	sala(sala),
 	pelicula(pelicula),
 	fecha(fecha),
 	hora(hora),
@@ -28,12 +29,12 @@ std::string Funcion::get_title() const {
 	return this->pelicula.get_title();
 }
 
-std::string Funcion::function_info(const std::string& sala) const {
+std::string Funcion::function_info() const {
 	std::string msg = std::to_string(this->idFuncion) + ": <Funcion para \""
-	+ this->pelicula.get_title() + "\" en la sala " + sala + " con fecha "
-	+ this->fecha + " - " + this->hora + ">";
+	+ this->pelicula.get_title() + "\" en la sala " + this->sala.get_ID()
+	+ " con fecha " + this->fecha + " - " + this->hora + ">";
 
-	if (this->asientos.size() == sala.size()) {	// sala llena
+	if (this->asientos.size() == this->sala.size()) {	// sala llena
 		msg += " AGOTADA";
 	}
 
@@ -41,17 +42,17 @@ std::string Funcion::function_info(const std::string& sala) const {
 	return msg;
 }
 
-std::string Funcion::show_seats(const char maxFil, const unsigned maxCol) {
+std::string Funcion::show_seats() {
 	std::string seats = "Asientos:\n";
 
-	for (unsigned i = 1; i <= maxCol; ++i)	{
+	for (unsigned i = 1; i <= sala.get_ultimaColumna(); ++i)	{
 		seats += "\t" + std::to_string(i);
 	}
 	seats += "\n";
 
-	for (char i = 'A'; i <= maxFil; ++i) {
+	for (char i = 'A'; i <= sala.get_ultimaFila(); ++i) {
 		seats += i;
-		for (unsigned j = 1; j <= maxCol; ++j)	{
+		for (unsigned j = 1; j <= sala.get_ultimaColumna(); ++j)	{
 			std::vector<Asiento>::iterator it_seat;
 			it_seat = std::find_if(this->asientos.begin(), this->asientos.end(),
 						find_by_position(i, j));

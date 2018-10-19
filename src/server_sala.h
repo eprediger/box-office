@@ -5,8 +5,6 @@
 #include <vector>
 #include <algorithm>
 
-#include "server_funcion.h"
-
 class Sala {
 protected:
 	Sala(const std::string& id, const std::string& screen,
@@ -17,16 +15,9 @@ public:
 
 	std::string get_ID() const;
 
-	void nueva_funcion(const Funcion& funcion);
+	char get_ultimaFila() const;
 
-	std::string get_title_by_date(const std::string& date);
-
-	bool has_funcionID(const unsigned funcionID);
-
-	std::string show_seats(const unsigned funcionID);
-
-	std::string reserve_seat(const unsigned funcionID, const std::string& fila,
-					  const std::string& columna);
+	unsigned get_ultimaColumna() const;
 
 	unsigned size() const;
 
@@ -36,7 +27,6 @@ private:
 private:
 	const std::string salaID;
 	const std::string pantalla;
-	std::vector<Funcion> funciones;
 
 protected:
 	char ultimaFila;
