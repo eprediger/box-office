@@ -3,10 +3,10 @@
 #include <string>
 
 Exception::Exception(std::string what) : 
-	msg(std::move(what.c_str())) {}
+	msg(std::move(what)) {}
 
 Exception::~Exception() {}
 
 const char* Exception::what() const noexcept {
-	return this->msg;
+	return this->msg.c_str();
 }

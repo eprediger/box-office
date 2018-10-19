@@ -13,7 +13,7 @@ public:
 	const char* what() const noexcept override;
 
 private:
-	const char* msg;
+	const std::string msg;
 };
 
 #endif

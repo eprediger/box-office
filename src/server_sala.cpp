@@ -79,3 +79,7 @@ std::string Sala::reserve_seat(const unsigned funcionID,
 bool Sala::valid_seat(const char fila, const unsigned columna) {
 	return ((fila <= this->ultimaFila) && (columna <= this->ultimaColumna));
 }
+
+unsigned Sala::size() const {
+	return ((this->ultimaFila - '0') * this->ultimaColumna);
+}

@@ -9,25 +9,20 @@ AcceptedClient::AcceptedClient(const Server& server, Cine& cine) :
 	cine(cine),
 	buffer() {}
 
-// AcceptedClient::~AcceptedClient() {}
+AcceptedClient::~AcceptedClient() {}
+
 void AcceptedClient::run() {
 	bool running = true;
 	while (running) {
 		uint32_t length = 0;
 		size_t received = this->peerSkt.receive_number(&length);
-		char* buffer = new char[length];
+		std::unique_ptr<char[]> buffer(new char[length]());
 		this->peerSkt.receive(&buffer[0], length);
 		this->buffer = std::string(&buffer[0], length);
 		running = (received > 0);
 		if (running) {
-			//std::string msg(this->buffer.begin(), this->buffer.end());
 			this->send_response(this->buffer);
-			// this->acceptSkt.shutdown(SHUT_RDWR);
-			// this->peerSkt.shutdown(SHUT_RDWR);
-			// this->peerSkt.close();
-			// this->peerSkt = this->acceptSkt.accept();
 		}
-		delete buffer;
 		this->buffer.clear();
 	}
 }
@@ -55,19 +50,6 @@ void AcceptedClient::send_response(const std::string& msg) {
 	if (cmd == "RESERVA") {
 		message = this->cine.reserve_seat(values[0], values[1], values[2]);
 	}
-	this->peerSkt.send_length(message.length());
-	this->peerSkt.send(message.c_str(), message.length());
+	this->peerSkt.send_length(message.length()+1);
+	this->peerSkt.send(message.c_str(), message.length()+1);
 }
-
-/*void AcceptedClient::run() {
-	// std::cout << "hola" << std::endl;
-	bool running = true;
-	while (running) {
-		int received = this->peerSkt.receive(this->buffer);
-		running = (received > 0);
-		if (running) {
-			std::string msg(this->buffer.begin(), this->buffer.end());
-			std::cout << msg << std::endl;
-		}
-	}
-}*/

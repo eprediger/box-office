@@ -29,9 +29,16 @@ std::string Funcion::get_title() const {
 }
 
 std::string Funcion::function_info(const std::string& sala) const {
-	return std::to_string(this->idFuncion) + ": <Funcion para \""
+	std::string msg = std::to_string(this->idFuncion) + ": <Funcion para \""
 	+ this->pelicula.get_title() + "\" en la sala " + sala + " con fecha "
-	+ this->fecha + " - " + this->hora + ">\n";
+	+ this->fecha + " - " + this->hora + ">";
+
+	if (this->asientos.size() == sala.size()) {	// sala llena
+		msg += " AGOTADA";
+	}
+
+	msg += "\n";
+	return msg;
 }
 
 std::string Funcion::show_seats(const char maxFil, const unsigned maxCol) {
@@ -50,7 +57,7 @@ std::string Funcion::show_seats(const char maxFil, const unsigned maxCol) {
 						find_by_position(i, j));
 			if (it_seat == this->asientos.end()) { // El asiento no existe
 				seats += "\tO";
-			} else {//if (it_asiento->esta_reservado()) {
+			} else {	// asiento reservado
 				seats += "\tX";
 			}
 		}

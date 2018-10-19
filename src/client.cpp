@@ -20,12 +20,11 @@ void Client::send_payload(const std::string& payload) {
 	this->connectionSkt.send(payload.c_str(), payload.length());
 }
 
-
 void Client::recv_payload() {
 	uint32_t length = 0;
 	this->connectionSkt.receive_number(&length);
-	char* buffer = new char[length]();
+	char* buffer = new char[length+1]();
 	this->connectionSkt.receive(&buffer[0], length);
 	std::cout << buffer;
-	delete buffer;
+	delete[] buffer;
 }

@@ -50,8 +50,8 @@ Socket::~Socket() {
 		freeaddrinfo(this->address);
 	}
 	if (this->skt_fd != -1) {
-		// this->shutdown(SHUT_RDWR);
-		// ::close(this->skt_fd);
+		this->shutdown(SHUT_RDWR);
+		::close(this->skt_fd);
 	}
 }
 

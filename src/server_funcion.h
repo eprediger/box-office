@@ -1,14 +1,14 @@
 #ifndef __SERVER_FUNCION_H__
 #define __SERVER_FUNCION_H__
 
+#include "server_pelicula.h"
+#include "server_asiento.h"
+
 #include <string>
 #include <vector>
 #include <iostream>
 #include <algorithm>
 #include <utility>
-
-#include "server_pelicula.h"
-#include "server_asiento.h"
 
 // typedef unsigned Funcion_ID;
 

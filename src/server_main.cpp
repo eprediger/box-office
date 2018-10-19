@@ -2,6 +2,7 @@
 #include <vector>
 
 #include "common_exception.h"
+#include "common_file_exception.h"
 #include "server.h"
 #include "server_cine.h"
 #include "server_exit_thread.h"
@@ -10,16 +11,16 @@
 #define SRV_ARGS 5
 
 #define SUCCESS 0
-#define USAGE_ERROR 1
-#define FILE_ERROR 2
+#define PARAM_ERROR 1
+#define USAGE_ERROR 2
 
 void joinAndDelete(std::vector<AcceptedClient*> &threads,
 				   ExitThread &exitThread) {
 	std::for_each(threads.begin(), threads.end(),
-                  [](AcceptedClient *&AcceptedClient) {
-                  AcceptedClient->join();
-                  delete AcceptedClient;
-                });
+				  [](AcceptedClient *&AcceptedClient) {
+				  AcceptedClient->join();
+				  delete AcceptedClient;
+				});
   exitThread.join();
 }
 
@@ -28,7 +29,7 @@ int main(int argc, const char *argv[]) {
 		std::cerr << "Uso: " << argv[0]
 				  << " <puerto> <salas.csv> <peliculas.csv> <funciones.csv>"
 				  << std::endl;
-		return USAGE_ERROR;
+		return PARAM_ERROR;
 	} else {
 		try {
 			Server servidor(argv[1]);
@@ -36,7 +37,7 @@ int main(int argc, const char *argv[]) {
 			std::vector<AcceptedClient*> clientes;
 			ExitThread exitThread(servidor);
 			exitThread.start();
-
+			
 			while(servidor.keepAccepting()) {
 				try {
 					clientes.push_back(new AcceptedClient(servidor, cine));
@@ -49,9 +50,12 @@ int main(int argc, const char *argv[]) {
 			}
 			joinAndDelete(clientes, exitThread);
 			return SUCCESS;
-		} catch (const Exception &e) {
+		} catch (const FileException& fe) {
+			std::cerr << fe.what() << std::endl;
+			return PARAM_ERROR;
+		} catch (const Exception& e) {
 			std::cerr << e.what() << std::endl;
-			return FILE_ERROR;
+			return USAGE_ERROR;
 		}
 	}
 }

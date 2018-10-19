@@ -1,7 +1,6 @@
 #include <string>
+#include <exception>
 #include "server_cine.h"
-#include "common_exception.h"
-#include "common_lock.h"
 
 Cine::Cine(const std::string& salasFile, const std::string& peliculasFile,
 	       const std::string& funcionesFile) :
@@ -14,7 +13,7 @@ Cine::Cine(const std::string& salasFile, const std::string& peliculasFile,
 		salasParser.parse_salas(this->salas);
 		peliculasParser.parse_peliculas(this->cartelera);
 		funcionesParser.parse_funciones(this->cartelera, this->salas);
-	} catch (const Exception& e) {
+	} catch (const std::exception& e) {
 		throw;
 	}
 }
@@ -28,6 +27,9 @@ std::string Cine::filter_by_language(const std::string& lang) {
 			movies += pelicula.get_title() + '\n';
 		}
 	}
+	if (movies.empty()) {
+		movies = "Idioma no reconocido\n";
+	}
 	return movies;
 }
 
@@ -37,6 +39,9 @@ std::string Cine::filter_by_rating(const std::string& rating) {
 		if (pelicula.get_rating() == rating) {
 			movies += pelicula.get_title() + '\n';
 		}
+	}
+	if (movies.empty()) {
+		movies = "Edad no reconocida\n";
 	}
 	return movies;
 }
@@ -48,10 +53,14 @@ std::string Cine::filter_by_genre(const std::string& genre) {
 			movies += pelicula.get_title() + "\n";
 		}
 	}
+	if (movies.empty()) {
+		movies = "Genero no reconocido\n";
+	}
 	return movies;
 }
 
 std::string Cine::filter_by_date(const std::string& date) {
+	Lock l(m);
 	std::string movies;
 	for (auto sala : this->salas) {
 		movies += sala.second.get_title_by_date(date);
@@ -60,6 +69,7 @@ std::string Cine::filter_by_date(const std::string& date) {
 }
 
 std::string Cine::view_seats(const std::string& funcion) {
+	Lock l(m);
 	unsigned funcionID = (unsigned int) std::stoul(funcion, nullptr, 10);
 	std::string movies;
 	for (auto sala : this->salas) {

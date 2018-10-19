@@ -5,8 +5,6 @@
 #include <vector>
 #include <algorithm>
 
-#include <iostream>
-
 #include "server_funcion.h"
 
 class Sala {
@@ -29,6 +27,8 @@ public:
 
 	std::string reserve_seat(const unsigned funcionID, const std::string& fila,
 					  const std::string& columna);
+
+	unsigned size() const;
 
 private:
 	bool valid_seat(const char fila, const unsigned columna);

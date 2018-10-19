@@ -10,8 +10,8 @@
 class AcceptedClient : public Thread {
 public:
 	AcceptedClient(const Server& server, Cine& cine);
-	// ~AcceptedClient();
-	~AcceptedClient() override = default;
+	
+	~AcceptedClient();
 
 protected:
 	void run() override;

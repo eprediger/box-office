@@ -4,7 +4,7 @@
 
 ## TP3: Entradas de Cine
 
-* #### compilar desde src/: make tp
+* #### compilar desde src/: make
 
 * #### correr desde src/: 
 
